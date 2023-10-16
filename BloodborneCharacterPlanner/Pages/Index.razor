@@ -1,9 +1,13 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<AuthorizeView>
+	<Authorized>
+		<h1>Characters</h1>
+	</Authorized>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+	<NotAuthorized>
+		<h1>Welcome to the Bloodborne Character Planner!</h1>
+		
+		<a href="Identity/Account/Register">Create a new account</a> to start making characters. 
+	</NotAuthorized>
+</AuthorizeView>

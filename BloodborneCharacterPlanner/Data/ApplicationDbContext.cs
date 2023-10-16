@@ -21,5 +21,7 @@ namespace BloodborneCharacterPlanner.Data
                 .HasForeignKey(e => e.CreatorId)
                 .HasPrincipalKey(e => e.Id);
         }
+
+        public DbSet<BloodborneCharacterPlanner.Models.Character> Character { get; set; } = default!;
     }
 }

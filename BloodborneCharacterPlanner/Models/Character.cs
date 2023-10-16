@@ -14,5 +14,13 @@ namespace BloodborneCharacterPlanner.Models
         [Required]
         public AppUser? Creator { get; set; }
         public string? CreatorId { get; set; }
+
+        public int Level { get; set; }
+        public int Vitality { get; set; }
+        public int Endurance { get; set; }
+        public int Strength { get; set; }
+        public int Skill { get; set; }
+        public int Bloodtinge { get; set; }
+        public int Arcane { get; set; }
     }
 }
