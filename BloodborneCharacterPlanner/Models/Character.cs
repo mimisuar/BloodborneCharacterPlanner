@@ -13,6 +13,7 @@ namespace BloodborneCharacterPlanner.Models
 
         [Required]
         public AppUser? Creator { get; set; }
+        [Required]
         public string? CreatorId { get; set; }
 
         public int Level { get; set; }
