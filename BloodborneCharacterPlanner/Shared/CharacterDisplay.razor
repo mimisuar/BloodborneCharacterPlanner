@@ -1,0 +1,63 @@
+﻿@using BloodborneCharacterPlanner.Data
+@using BloodborneCharacterPlanner.Models
+@using Microsoft.EntityFrameworkCore
+@implements IDisposable
+@inject IDbContextFactory<ApplicationDbContext> ContextFactory
+
+@if (SignedInUser != null)
+{
+	@if (_characters?.Count() == 0)
+	{
+		<p>Looks like you haven't made any characteres yet.</p>
+		<p><a href="">Click here</a> to make a character.</p>
+	}
+	else if (_characters != null)
+	{
+		<table>
+			<th>
+				<td>Character Name</td>
+				<td></td>
+			</th>
+
+			@foreach (BBCharacter bbchar in _characters)
+			{
+			<tr>
+				<td>@bbchar.Name</td>
+				<td><a href="">Edit</a></td>
+			</tr>
+			}
+		</table>
+		
+	}
+}
+else
+{
+	<p>Something went wrong.</p>
+}
+
+@code {
+	private ApplicationDbContext? _context;
+	private IEnumerable<BBCharacter>? _characters;
+
+	[Parameter]
+	public AppUser? SignedInUser { get; set; }
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if (SignedInUser == null)
+		{
+			Console.WriteLine("No user found");
+			return;
+		}
+
+		_context = await ContextFactory.CreateDbContextAsync();
+
+		_characters = await _context.CharacterSet.Where(e => e.CreatorId == SignedInUser.Id).ToListAsync();
+		return;
+	}
+
+	public void Dispose()
+	{
+		_context?.Dispose();
+	}
+}

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BloodborneCharacterPlanner.Models
 {
-    public class Character
+    public class BBCharacter
     {
         public string? Name { get; set; }
         

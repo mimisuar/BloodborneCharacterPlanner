@@ -1,14 +1,37 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Identity
+@using BloodborneCharacterPlanner.Data
+@inject UserManager<AppUser> UserManager
 
 <AuthorizeView>
 	<Authorized>
-		<h1>Characters</h1>
-		<a href="/dumb">pleaework</a>
+		<CharacterDisplay SignedInUser=@SignedInUser></CharacterDisplay>
 	</Authorized>
-
 	<NotAuthorized>
-		<h1>Welcome to the Bloodborne Character Planner!</h1>
-		
-		<a href="Identity/Account/Register">Create a new account</a> to start making characters. 
+		Create an account, or sign in.
 	</NotAuthorized>
 </AuthorizeView>
+@code {
+	[CascadingParameter]
+	private Task<AuthenticationState>? authenticationState { get; set; }
+
+	private AppUser? SignedInUser { get; set; }
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if (authenticationState == null)
+		{
+			return;
+		}
+
+		var authState = await authenticationState;
+		var user = authState.User;
+
+		if (user == null)
+		{
+			return;
+		}
+
+		SignedInUser = await UserManager.GetUserAsync(user);
+	}
+}

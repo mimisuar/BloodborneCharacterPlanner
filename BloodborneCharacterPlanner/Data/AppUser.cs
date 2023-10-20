@@ -6,7 +6,7 @@ namespace BloodborneCharacterPlanner.Data
 {
     public class AppUser : IdentityUser
     {
-        public ICollection<Character>? Characters { get; set; }
+        public ICollection<BBCharacter>? Characters { get; set; }
 
     }
 }
