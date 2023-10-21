@@ -9,23 +9,28 @@
 	@if (_characters?.Count() == 0)
 	{
 		<p>Looks like you haven't made any characteres yet.</p>
-		<p><a href="">Click here</a> to make a character.</p>
+		<p><a href="/editor">Click here</a> to make a character.</p>
 	}
 	else if (_characters != null)
 	{
 		<table>
-			<th>
-				<td>Character Name</td>
-				<td></td>
-			</th>
+			<tr>
+				<th>Character Name</th>
+				<th>Edit</th>
+			</tr>
 
 			@foreach (BBCharacter bbchar in _characters)
 			{
 			<tr>
 				<td>@bbchar.Name</td>
-				<td><a href="">Edit</a></td>
+				<td><a href="/editor/@bbchar.Id">Edit</a></td>
 			</tr>
 			}
+
+			<tr>
+				<td><a href="/editor">Create</a></td>
+				<td> </td>
+			</tr>
 		</table>
 		
 	}
@@ -46,7 +51,6 @@ else
 	{
 		if (SignedInUser == null)
 		{
-			Console.WriteLine("No user found");
 			return;
 		}
 

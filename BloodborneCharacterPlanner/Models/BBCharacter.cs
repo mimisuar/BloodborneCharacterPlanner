@@ -5,6 +5,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BloodborneCharacterPlanner.Models
 {
+
+    public enum BBCharacterOrigin
+    {
+        Milquetoast,
+        LoneSurvivor,
+        TroubledChildhood,
+        ViolentPast,
+        Professional,
+        MilitaryVeteran,
+        NobleScion,
+        CruelFate,
+        WasteOfSkin
+    }
     public class BBCharacter
     {
         public string? Name { get; set; }
@@ -16,12 +29,13 @@ namespace BloodborneCharacterPlanner.Models
         [Required]
         public string? CreatorId { get; set; }
 
-        public int Level { get; set; }
         public int Vitality { get; set; }
         public int Endurance { get; set; }
         public int Strength { get; set; }
         public int Skill { get; set; }
         public int Bloodtinge { get; set; }
         public int Arcane { get; set; }
+
+        public BBCharacterOrigin Origin { get; set; }
     }
 }

@@ -5,7 +5,7 @@
 
 <AuthorizeView>
 	<Authorized>
-		<CharacterDisplay SignedInUser=@SignedInUser></CharacterDisplay>
+		<CharacterList SignedInUser=@SignedInUser></CharacterList>
 	</Authorized>
 	<NotAuthorized>
 		Create an account, or sign in.
@@ -17,7 +17,7 @@
 
 	private AppUser? SignedInUser { get; set; }
 
-	protected override async Task OnParametersSetAsync()
+	protected override async Task OnInitializedAsync()
 	{
 		if (authenticationState == null)
 		{

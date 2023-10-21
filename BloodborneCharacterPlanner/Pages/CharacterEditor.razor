@@ -1,0 +1,83 @@
+﻿@page "/editor/{CharacterId:int?}"
+@using BloodborneCharacterPlanner.Data
+@using BloodborneCharacterPlanner.Models
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@inject ApplicationDbContext Context
+@inject SignInManager<AppUser> SignInMan
+
+<h3>CharacterEditor</h3>
+
+<EditForm Model="editTarget" OnValidSubmit="OnSubmit">
+	<DataAnnotationsValidator></DataAnnotationsValidator>
+	<ValidationSummary></ValidationSummary>
+	Name: <InputText @bind-Value="editTarget!.Name" ></InputText><br/>
+	Origin: <InputSelect  @bind-Value="editTarget!.Origin">
+		@foreach (var origin in Enum.GetValues(typeof(BBCharacterOrigin)))
+		{
+			<option value="@origin">@origin</option>
+		}
+	</InputSelect><br/>
+
+	Vitality: <InputNumber @bind-Value="editTarget!.Vitality"></InputNumber><br/>
+	Endurance: <InputNumber @bind-Value="editTarget!.Endurance"></InputNumber><br/>
+	Strength: <InputNumber @bind-Value="editTarget!.Strength"></InputNumber><br/>
+	Skill: <InputNumber @bind-Value="editTarget!.Skill"></InputNumber><br/>
+	Bloodtinge: <InputNumber @bind-Value="editTarget!.Bloodtinge"></InputNumber><br/>
+	Arcane: <InputNumber @bind-Value="editTarget!.Arcane"></InputNumber><br/>
+
+
+	<button type="submit" class="btn btn-primary">Click me</button>
+</EditForm>
+
+
+@code {
+	[CascadingParameter]
+	public Task<AuthenticationState>? AuthState { get; set; }
+
+	[Parameter]
+	public int CharacterId { get; set; }
+
+	private BBCharacter? editTarget;
+
+	private EditContext? editContext;
+	private bool saving = false;
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (AuthState == null) return;
+
+		var authState = await AuthState;
+		var user = authState.User;
+		if (user == null) return;
+
+		if (!SignInMan.IsSignedIn(user)) return;
+		var editingUser = await SignInMan.UserManager.GetUserAsync(user);
+		if (editingUser == null) return;
+
+		editTarget = Context.CharacterSet.FirstOrDefault(e => e.Id == CharacterId && editingUser.Id == e.CreatorId);
+		if (editTarget == null) 
+		{
+			Console.WriteLine("Making an new character");
+			editTarget = new BBCharacter()
+			{
+				Creator = editingUser,
+				CreatorId = editingUser.Id,
+				Name = "Untitled"
+			};
+			Context.CharacterSet.Add(editTarget);
+			await Context.SaveChangesAsync();
+		};
+
+		Console.WriteLine("We are good to go");
+	}
+
+	private async Task OnSubmit()
+	{
+		if (saving) return;
+
+		saving = true;
+		await Context.SaveChangesAsync();
+		saving = false;
+	}
+}
