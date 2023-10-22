@@ -10,12 +10,13 @@
 }
 else
 {
-	<table class="table">
-		<tr>
+	<table class="table table-striped">
+		<thead>
 			<th>Character Name</th>
 			<th>Creator</th>
-		</tr>
+		</thead>
 
+		<tbody>
 		@foreach (var character in searchResults)
 		{
 			<tr>
@@ -24,6 +25,7 @@ else
 				<td><a href="/view/@character.Id">View</a></td>
 			</tr>
 		}
+		</tbody>
 	</table>
 }
 

@@ -4,11 +4,12 @@
 @inject ApplicationDbContext Context
 
 <p>Check out some characters</p>
-<table>
-	<tr>
+<table class="table table-striped">
+	<thead>
 		<th>Name</th>
-	</tr>
+	</thead>
 
+	<tbody>
 	@foreach (BBCharacter character in _characters)
 	{
 		<tr>
@@ -16,6 +17,7 @@
 			<td><a href="/view/@character.Id">View</a></td>
 		</tr>
 	}
+	</tbody>
 </table>
 
 @code {
