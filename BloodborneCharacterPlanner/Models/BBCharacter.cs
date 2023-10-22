@@ -20,6 +20,8 @@ namespace BloodborneCharacterPlanner.Models
     }
     public class BBCharacter
     {
+        [Required]
+        [StringLength(16)]
         public string? Name { get; set; }
         
         public int Id { get; set; }
@@ -29,12 +31,18 @@ namespace BloodborneCharacterPlanner.Models
         [Required]
         public string? CreatorId { get; set; }
 
+        [Range(0, 99)]
         public int Vitality { get; set; }
+        [Range(0, 99)]
         public int Endurance { get; set; }
+        [Range(0, 99)]
         public int Strength { get; set; }
-        public int Skill { get; set; }
-        public int Bloodtinge { get; set; }
-        public int Arcane { get; set; }
+		[Range(0, 99)]
+		public int Skill { get; set; }
+		[Range(0, 99)]
+		public int Bloodtinge { get; set; }
+		[Range(0, 99)]
+		public int Arcane { get; set; }
 
         public BBCharacterOrigin Origin { get; set; }
     }

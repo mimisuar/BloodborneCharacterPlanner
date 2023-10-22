@@ -1,0 +1,59 @@
+﻿@page "/delete/{CharacterId:int}"
+@using BloodborneCharacterPlanner.Data
+@using BloodborneCharacterPlanner.Models
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@inject ApplicationDbContext Context
+@inject SignInManager<AppUser> SignInManager
+@inject NavigationManager NavManager
+
+@if (canDeleteCharacter)
+{
+	<h3>Delete a Character?</h3>
+	<p>Are you sure you want to delete @characterToDelete!.Name</p>
+	<button class="btn btn-primary" @onclick="DeleteCharacter">Yes, delete them</button>
+}
+else
+{
+	<h3>You don't have access to this page.</h3>
+}
+
+@code {
+	[CascadingParameter]
+	public Task<AuthenticationState>? AuthStateTask { get; set; }
+
+	[Parameter]
+	public int CharacterId { get; set; }
+
+	private bool canDeleteCharacter = false;
+	private BBCharacter? characterToDelete;
+	private bool deleting = false;
+
+	protected override async Task OnInitializedAsync()
+	{
+		canDeleteCharacter = false;
+
+		if (AuthStateTask == null) return;
+
+		var authState = await AuthStateTask;
+		if (!SignInManager.IsSignedIn(authState.User)) return;
+
+		var user = await SignInManager.UserManager.GetUserAsync(authState.User);
+		if (user == null) return;
+
+		characterToDelete = Context.CharacterSet.FirstOrDefault(e => e.Id == CharacterId && e.CreatorId == user.Id);
+		if (characterToDelete == null) return;
+
+		canDeleteCharacter = true;
+	}
+
+	private async Task DeleteCharacter()
+	{
+		if (deleting || characterToDelete == null) return;
+
+		Context.CharacterSet.Remove(characterToDelete);
+		await Context.SaveChangesAsync();
+
+		NavManager.NavigateTo("/");
+	}
+}
