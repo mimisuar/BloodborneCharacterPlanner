@@ -1,0 +1,52 @@
+﻿@page "/search"
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext Context
+
+<h3>Search for characters</h3>
+
+@if (searchResults.Count() == 0)
+{
+	<p>No characters found.</p>
+}
+else
+{
+	<table>
+		<tr>
+			<th>Character Name</th>
+			<th>Creator</th>
+		</tr>
+
+		@foreach (var character in searchResults)
+		{
+			<tr>
+				<td>@character.Name</td>
+				<td>@character.Creator?.UserName</td>
+				<td><a href="/view/@character.Id">View</a></td>
+			</tr>
+		}
+	</table>
+}
+
+@code {
+	[Parameter]
+	[SupplyParameterFromQuery(Name = "min_strength")]
+	public int? MinStrength { get; set; }
+
+	[Parameter]
+	[SupplyParameterFromQuery(Name = "min_skill")]
+	public int? MinSkill { get; set; }
+
+	private List<BBCharacter> searchResults = new();
+
+	protected override void OnParametersSet()
+	{
+		searchResults = Context.CharacterSet.Where(HandleSearch).ToList();
+	}
+
+	private bool HandleSearch(BBCharacter e)
+	{
+		if (MinStrength != null & e.Strength < MinStrength) return false;
+		if (MinSkill != null & e.Skill < MinSkill) return false;
+		return true;
+	}
+}

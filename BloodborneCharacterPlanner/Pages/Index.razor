@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Identity
-@using BloodborneCharacterPlanner.Data
 @inject UserManager<AppUser> UserManager
 
 <AuthorizeView>
@@ -8,7 +7,7 @@
 		<CharacterList SignedInUser=@SignedInUser></CharacterList>
 	</Authorized>
 	<NotAuthorized>
-		Create an account, or sign in.
+		<AllCharacterList></AllCharacterList>
 	</NotAuthorized>
 </AuthorizeView>
 @code {

@@ -1,6 +1,4 @@
 ﻿@page "/editor/{CharacterId:int?}"
-@using BloodborneCharacterPlanner.Data
-@using BloodborneCharacterPlanner.Models
 @using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
 @inject ApplicationDbContext Context
@@ -38,7 +36,7 @@
 	[Parameter]
 	public int CharacterId { get; set; }
 
-	private BBCharacter? editTarget;
+	private BBCharacter? editTarget = new BBCharacter();
 
 	private bool saving = false;
 

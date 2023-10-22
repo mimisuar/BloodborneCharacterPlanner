@@ -1,0 +1,28 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using BloodborneCharacterPlanner.Data
+@using BloodborneCharacterPlanner.Models
+@inject ApplicationDbContext Context
+
+<p>Check out some characters</p>
+<table>
+	<tr>
+		<th>Name</th>
+	</tr>
+
+	@foreach (BBCharacter character in _characters)
+	{
+		<tr>
+			<td>@character.Name</td>
+			<td><a href="/view/@character.Id">View</a></td>
+		</tr>
+	}
+</table>
+
+@code {
+	private List<BBCharacter> _characters;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_characters = await Context.CharacterSet.OrderByDescending(e => e.Id).Take(10).ToListAsync();
+	}
+}
