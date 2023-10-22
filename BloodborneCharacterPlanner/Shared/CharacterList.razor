@@ -11,27 +11,25 @@
 	}
 	else if (_characters != null)
 	{
-		<table>
-			<tr>
-				<th>Character Name</th>
-				<th></th>
-				<th></th>
-			</tr>
+		<table class="table table-hover table-striped">
+			<thead>
+				<td scope="col">Character Name</td>
+				<td scope="col"></td>
+				<td scope="col"></td>
+			</thead>
 
+			<tbody>
 			@foreach (BBCharacter bbchar in _characters)
 			{
-			<tr>
-				<td>@bbchar.Name</td>
-				<td><a href="/editor/@bbchar.Id">Edit</a></td>
-				<td><a href="/delete/@bbchar.Id">Delete</a></td>
-			</tr>
+				<tr>
+					<td scope="row">@bbchar.Name</td>
+					<td><a href="/editor/@bbchar.Id">Edit</a></td>
+					<td><a href="/delete/@bbchar.Id">Delete</a></td>
+				</tr>
+				
+			
 			}
-
-			<tr>
-				<td><a href="/editor">Create</a></td>
-				<td> </td>
-				<td> </td>
-			</tr>
+			</tbody>
 		</table>
 		
 	}
