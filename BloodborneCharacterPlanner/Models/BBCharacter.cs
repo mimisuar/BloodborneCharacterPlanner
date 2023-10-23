@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
+using BloodborneCharacterPlanner.Utilities;
 
 namespace BloodborneCharacterPlanner.Models
 {
@@ -51,5 +52,14 @@ namespace BloodborneCharacterPlanner.Models
         {
             return Vitality + Endurance + Strength + Skill + Bloodtinge + Arcane - 50;
         }
+
+        public int GetBloodEchoCost()
+        {
+			int level = GetLevel();
+			if (level < 5 || level >= 545) return 0;
+
+			int soulsUsed = Origin != BBCharacterOrigin.WasteOfSkin ? BloodEchoLevel.GetBloodEchoSum(10) : 0;
+			return BloodEchoLevel.GetBloodEchoSum(level) - soulsUsed;
+		}
     }
 }

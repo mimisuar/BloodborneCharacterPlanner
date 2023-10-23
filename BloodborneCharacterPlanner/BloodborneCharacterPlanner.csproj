@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Shared\AllCharacterList.razor" />
     <Content Remove="Shared\CharacterEditor.razor" />
   </ItemGroup>
 
@@ -36,7 +35,6 @@
 
   <ItemGroup>
     <None Include="Pages\CharacterEditor.razor" />
-    <None Include="Shared\AllCharacterList.razor" />
   </ItemGroup>
 
 </Project>

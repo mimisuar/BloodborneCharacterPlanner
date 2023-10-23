@@ -37,7 +37,7 @@
 
 				<div class="col-md-12">
 					<label class="form-label">Blood Echo Cost: </label>
-					<input type="number" class="form-control" disabled readonly value=@GetBloodLevelCost() />
+					<input type="number" class="form-control" disabled readonly value=@editTarget.GetBloodEchoCost() />
 				</div>
 	
 				<div class="col-sm-12">
@@ -177,14 +177,5 @@
 		editTarget.Bloodtinge = targetBlock.Blt;
 		editTarget.Arcane = targetBlock.Arc;
 		level = editTarget.GetLevel();
-	}
-
-	private int GetBloodLevelCost()
-	{
-		int level = editTarget!.GetLevel();
-		if (level < 5 || level >= 545) return -1;
-
-		int soulsUsed = editTarget!.Origin == BBCharacterOrigin.WasteOfSkin ? BloodEchoLevel.GetBloodEchoSum(10) : 0;
-		return BloodEchoLevel.GetBloodEchoSum(level) - soulsUsed;
 	}
 }

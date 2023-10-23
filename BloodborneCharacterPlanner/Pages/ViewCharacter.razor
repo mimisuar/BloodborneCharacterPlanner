@@ -1,0 +1,83 @@
+﻿@page "/view/{CharacterId:int}"
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext Context
+
+@if (_character == null)
+{
+	<h3>No Character Found</h3>
+}
+else
+{
+<div class="container-md">
+	<table class="table table-striped">
+		<thead>
+			<th scope="row">Stat</th>
+			<td>Value</td>
+		</thead>
+
+		<tbody>
+			<tr>
+				<th>Name</th>
+				<td>@_character.Name</td>
+			</tr>
+
+			<tr>
+				<th>Origin</th>
+				<td>@_character.Origin.ToString()</td>
+			</tr>
+
+			<tr>
+				<th>Level</th>
+				<td>@_character.GetLevel()</td>
+			</tr>	
+
+			<tr>
+				<th>Vitality</th>
+				<td>@_character.Vitality</td>
+			</tr>
+
+			<tr>
+				<th>Endurance</th>
+				<td>@_character.Endurance</td>
+			</tr>	
+
+			<tr>
+				<th>Strength</th>
+				<td>@_character.Strength</td>
+			</tr>
+
+			<tr>
+				<th>Skill</th>
+				<td>@_character.Skill</td>
+			</tr>
+
+			<tr>
+				<th>Bloodtinge</th>
+				<td>@_character.Bloodtinge</td>
+			</tr>	
+
+			<tr>
+				<th>Arcane</th>
+				<td>@_character.Arcane</td>
+			</tr>
+
+			<tr>
+				<th>Total Cost</th>
+				<td>@_character.GetBloodEchoCost()</td>
+			</tr>	
+		</tbody>
+	</table>
+</div>
+}
+
+@code {
+	[Parameter]
+	public int CharacterId { get; set; }
+
+	private BBCharacter? _character;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_character = await Context.CharacterSet.FirstOrDefaultAsync(e => e.Id == CharacterId);
+	}
+}

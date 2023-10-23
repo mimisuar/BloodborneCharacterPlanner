@@ -7,21 +7,26 @@
 <table class="table table-striped">
 	<thead>
 		<th>Name</th>
+		<td></td>
 	</thead>
 
 	<tbody>
-	@foreach (BBCharacter character in _characters)
-	{
-		<tr>
-			<td>@character.Name</td>
-			<td><a href="/view/@character.Id">View</a></td>
-		</tr>
-	}
+		@foreach (BBCharacter character in _characters)
+		{
+			<tr>
+				<td>@character.Name</td>
+				<td><a href="/view/@character.Id">View</a></td>
+			</tr>
+		}
 	</tbody>
 </table>
 
+<div>
+	<p>Want to make some characters? <a href="/Identity/Account/Register">Create an account</a>, or <a href="Identity/Account/Login"> log in to an existing account.</a> </p>
+</div>
+
 @code {
-	private List<BBCharacter> _characters;
+	private List<BBCharacter> _characters = new List<BBCharacter>();
 
 	protected override async Task OnInitializedAsync()
 	{
