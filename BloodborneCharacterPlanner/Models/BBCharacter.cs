@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace BloodborneCharacterPlanner.Models
 {
-
     public enum BBCharacterOrigin
     {
         Milquetoast,
@@ -18,9 +18,10 @@ namespace BloodborneCharacterPlanner.Models
         CruelFate,
         WasteOfSkin
     }
+
     public class BBCharacter
     {
-        [Required]
+		[Required]
         [StringLength(16)]
         public string? Name { get; set; }
         
@@ -45,5 +46,10 @@ namespace BloodborneCharacterPlanner.Models
 		public int Arcane { get; set; }
 
         public BBCharacterOrigin Origin { get; set; }
+
+        public int GetLevel()
+        {
+            return Vitality + Endurance + Strength + Skill + Bloodtinge + Arcane - 50;
+        }
     }
 }

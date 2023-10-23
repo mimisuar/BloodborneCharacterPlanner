@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BloodborneCharacterPlanner-cfa4cf82-f41a-4a16-84fa-1c19ec7c1997</UserSecretsId>
+    <RazorLanguageVersion>7</RazorLanguageVersion>
   </PropertyGroup>
 
   <ItemGroup>

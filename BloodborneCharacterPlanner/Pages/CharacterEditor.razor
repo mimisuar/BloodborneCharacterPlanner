@@ -1,33 +1,85 @@
 ﻿@page "/editor/{CharacterId:int?}"
 @using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
+@using BloodborneCharacterPlanner.Utilities
 @inject ApplicationDbContext Context
 @inject SignInManager<AppUser> SignInMan
 
 <h3>CharacterEditor</h3>
 
-<EditForm Model="editTarget" OnValidSubmit="OnSubmit">
-	<DataAnnotationsValidator></DataAnnotationsValidator>
-	<ValidationSummary></ValidationSummary>
-	Name: <InputText @bind-Value="editTarget!.Name" ></InputText><br/>
-	Origin: <InputSelect  @bind-Value="editTarget!.Origin">
-		@foreach (var origin in Enum.GetValues(typeof(BBCharacterOrigin)))
-		{
-			<option value="@origin">@origin</option>
-		}
-	</InputSelect><br/>
+<div class="container-md">
+	<div class="row align-items-center">
+		<div class="col">
+			<EditForm class="row g-2" EditContext="editContext" OnValidSubmit="OnValidSubmit">
+				<DataAnnotationsValidator></DataAnnotationsValidator>
+				<ValidationSummary></ValidationSummary>
 
-	<label>Vitality: <InputNumber @bind-Value="editTarget!.Vitality"></InputNumber></label>
-	<br/>
-	Endurance: <InputNumber @bind-Value="editTarget!.Endurance"></InputNumber><br/>
-	Strength: <InputNumber @bind-Value="editTarget!.Strength"></InputNumber><br/>
-	Skill: <InputNumber @bind-Value="editTarget!.Skill"></InputNumber><br/>
-	Bloodtinge: <InputNumber @bind-Value="editTarget!.Bloodtinge"></InputNumber><br/>
-	Arcane: <InputNumber @bind-Value="editTarget!.Arcane"></InputNumber><br/>
+				<div class="col-md-12">
+					<label class="form-label">Name: </label>
+					<InputText class="form-control" @bind-Value="editTarget!.Name" ></InputText>
+				</div>
+	
 
-	<button type="submit" class="btn btn-primary">Save Changes</button>
-</EditForm>
+				<div class="col-md-12">
+					<label class="form-label">Origin: </label>
+					<InputSelect class="form-control" @bind-Value:get="editTarget!.Origin" @bind-Value:set="OnOriginChanged">
+						@foreach (var origin in Enum.GetValues(typeof(BBCharacterOrigin)))
+						{
+						<option value="@origin">@origin</option>
+						}
+					</InputSelect>
+				</div>
 
+				<div class="col-md-12">
+					<label class="form-label">Level: </label>
+					<input type="number" class="form-control" disabled readonly value=@editTarget!.GetLevel() />
+				</div>
+
+				<div class="col-md-12">
+					<label class="form-label">Blood Echo Cost: </label>
+					<input type="number" class="form-control" disabled readonly value=@GetBloodLevelCost() />
+				</div>
+	
+				<div class="col-sm-12">
+					<label class="form-label">Vitality: </label>
+					<InputNumber class="form-control" @bind-Value="editTarget!.Vitality"></InputNumber>
+				</div>
+	
+				<div class="col-sm-12">
+					<label class="form-label">Endurance: </label>
+					<InputNumber class="form-control" @bind-Value="editTarget!.Endurance"></InputNumber>
+				</div>
+
+				<div class="col-sm-12">
+					<label class="form-label">Strength: </label>
+					<InputNumber class="form-control" @bind-Value="editTarget!.Strength"></InputNumber>
+				</div>
+
+				<div class="col-sm-12">
+					<label class="form-label">Skill: </label>
+					<InputNumber class="form-control" @bind-Value="editTarget!.Skill"></InputNumber>
+				</div>
+	
+				<div class="col-sm-12">
+					<label class="form-label">Bloodtinge: </label>
+					<InputNumber class="form-control" @bind-Value="editTarget!.Bloodtinge"></InputNumber>
+				</div>
+	
+				<div class="col-sm-12">
+					<label class="form-label">Arcane: </label>
+					<InputNumber class="form-control" @bind-Value="editTarget!.Arcane"></InputNumber>
+				</div>
+	
+				<div class="col-md-6">
+					<button type="submit" class="btn btn-primary">Save Changes</button>
+				</div>
+	
+			</EditForm>
+		</div>
+
+		
+	</div>
+</div>
 
 @code {
 	[CascadingParameter]
@@ -37,11 +89,19 @@
 	public int CharacterId { get; set; }
 
 	private BBCharacter? editTarget = new BBCharacter();
+	private StatBlock targetBlock;
+	private EditContext? editContext;
+	private ValidationMessageStore? messageStore;
+
+	private int level;
 
 	private bool saving = false;
 
 	protected override async Task OnInitializedAsync()
 	{
+		editContext = new EditContext(editTarget!);
+		messageStore = new ValidationMessageStore(editContext);
+
 		if (AuthState == null) return;
 
 		var authState = await AuthState;
@@ -62,19 +122,69 @@
 				CreatorId = editingUser.Id,
 				Name = "Untitled"
 			};
+			OnOriginChanged(BBCharacterOrigin.Milquetoast);
 			Context.CharacterSet.Add(editTarget);
 			await Context.SaveChangesAsync();
 		};
 
+		editContext = new EditContext(editTarget);
+		messageStore = new ValidationMessageStore(editContext);
+		editContext.OnValidationRequested += HandleValidationRequest;
+
+		targetBlock = StatBlock.Blocks[editTarget.Origin];
 		Console.WriteLine("We are good to go");
 	}
 
-	private async Task OnSubmit()
+	private async Task OnValidSubmit()
 	{
 		if (saving) return;
 
 		saving = true;
 		await Context.SaveChangesAsync();
 		saving = false;
+	}
+
+	private void HandleValidationRequest(object? sender, ValidationRequestedEventArgs args)
+	{
+		messageStore?.Clear();
+
+		if (editTarget!.Vitality < targetBlock.Vit 
+			|| editTarget.Endurance < targetBlock.End 
+			|| editTarget.Strength < targetBlock.Str 
+			|| editTarget.Skill < targetBlock.Skl
+			|| editTarget.Bloodtinge < targetBlock.Blt 
+			|| editTarget.Arcane < targetBlock.Arc)
+		{
+			messageStore?.Add(() => editTarget, "Build stats can't be less than origin stats.");
+		}
+
+		int level = editTarget.GetLevel();
+		if (level < 4 || level > 545)
+		{
+			messageStore?.Add(() => editTarget, "Level minimum is 4 and maximum is 545.");
+		}
+	}
+
+	private void OnOriginChanged(BBCharacterOrigin origin)
+	{
+		editTarget!.Origin = origin;
+
+		targetBlock = StatBlock.Blocks[editTarget.Origin];
+		editTarget.Vitality = targetBlock.Vit;
+		editTarget.Endurance = targetBlock.End;
+		editTarget.Strength = targetBlock.Str;
+		editTarget.Skill = targetBlock.Skl;
+		editTarget.Bloodtinge = targetBlock.Blt;
+		editTarget.Arcane = targetBlock.Arc;
+		level = editTarget.GetLevel();
+	}
+
+	private int GetBloodLevelCost()
+	{
+		int level = editTarget!.GetLevel();
+		if (level < 5 || level >= 545) return -1;
+
+		int soulsUsed = editTarget!.Origin == BBCharacterOrigin.WasteOfSkin ? BloodEchoLevel.GetBloodEchoSum(10) : 0;
+		return BloodEchoLevel.GetBloodEchoSum(level) - soulsUsed;
 	}
 }
