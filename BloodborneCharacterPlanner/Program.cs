@@ -29,7 +29,11 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseMigrationsEndPoint();
+	app.UseSwagger();
+	app.UseSwaggerUI(c =>
+		c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1")
+	);
+	app.UseMigrationsEndPoint();
 }
 else
 {
@@ -50,10 +54,7 @@ app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1")
-);
+
 
 // trigger a new push
 app.Run();
